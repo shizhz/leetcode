@@ -12,5 +12,5 @@ func two_sum(nums []int, target int) []int {
 			}
 		}
 	}
-	panic("no result found")
+	return []int{}
 }

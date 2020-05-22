@@ -1,13 +1,11 @@
 package algorithms
 
 import (
-	"fmt"
-	"reflect"
+	"math"
 	"testing"
 )
 
 func Test_findMedianSortedArrays(t *testing.T) {
-	fmt.Println("test 0")
 	type args struct {
 		nums1 []int
 		nums2 []int
@@ -17,64 +15,107 @@ func Test_findMedianSortedArrays(t *testing.T) {
 		args args
 		want float64
 	}{
-		// TODO: Add test cases.
+		{
+			name: "test - 0",
+			args: args{
+				nums1: []int{1},
+				nums2: []int{2},
+			},
+			want: 1.5,
+		},
+		{
+			name: "test - 1",
+			args: args{
+				nums1: []int{1, 3},
+				nums2: []int{2},
+			},
+			want: 2,
+		},
+		{
+			name: "test - 2",
+			args: args{
+				nums1: []int{1, 2},
+				nums2: []int{3, 4},
+			},
+			want: 2.5,
+		},
+		{
+			name: "test - 3",
+			args: args{
+				nums1: []int{},
+				nums2: []int{3, 4},
+			},
+			want: 3.5,
+		},
+		{
+			name: "test - 4",
+			args: args{
+				nums1: []int{},
+				nums2: []int{1, 3, 4},
+			},
+			want: 3,
+		},
+		{
+			name: "test - 5",
+			args: args{
+				nums1: []int{1, 3, 4},
+				nums2: []int{},
+			},
+			want: 3,
+		},
+		{
+			name: "test - 6",
+			args: args{
+				nums1: []int{1, 4},
+				nums2: []int{},
+			},
+			want: 2.5,
+		},
+		{
+			name: "test - 7",
+			args: args{
+				nums1: []int{},
+				nums2: []int{},
+			},
+			want: math.MinInt64,
+		},
+		{
+			name: "test - 8",
+			args: args{
+				nums1: []int{1},
+				nums2: []int{100, 101, 101, 101},
+			},
+			want: 101,
+		},
+		{
+			name: "test - 9",
+			args: args{
+				nums1: []int{1, 3, 4, 5, 6},
+				nums2: []int{100, 101},
+			},
+			want: 5,
+		},
+		{
+			name: "test - 10",
+			args: args{
+				nums1: []int{1, 3, 5, 7, 9},
+				nums2: []int{2, 4, 6, 8, 9},
+			},
+			want: 5.5,
+		},
+		{
+			name: "test - 11",
+			args: args{
+				nums1: []int{1, 3, 5, 5, 5},
+				nums2: []int{2, 4, 6, 8, 9},
+			},
+			want: 5,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := findMedianSortedArrays(tt.args.nums1, tt.args.nums2); got != tt.want {
 				t.Errorf("findMedianSortedArrays() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func Test_medianIndices(t *testing.T) {
-	type args struct {
-		tom   []int
-		jerry []int
-	}
-	tests := []struct {
-		name string
-		args args
-		want []int
-	}{
-		{
-			name: "Both empty",
-			args: args{
-				tom:   []int{},
-				jerry: []int{},
-			},
-			want: []int{},
-		},
-		{
-			name: "Both odd",
-			args: args{
-				tom:   []int{0},
-				jerry: []int{1},
-			},
-			want: []int{0, 1},
-		},
-		{
-			name: "Jerry empty",
-			args: args{
-				tom:   []int{0, 1, 2},
-				jerry: []int{},
-			},
-			want: []int{1},
-		},
-		{
-			name: "Both not empty",
-			args: args{
-				tom:   []int{0, 1, 2, 3},
-				jerry: []int{4, 5},
-			},
-			want: []int{2, 3},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := medianIndices(tt.args.tom, tt.args.jerry); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("medianIndices() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -227,6 +268,66 @@ func Test_indexOf(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := indexOf(tt.args.lst, tt.args.start_inclusive, tt.args.end_exclusive, tt.args.target); got != tt.want {
 				t.Errorf("indexOf() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_averate(t *testing.T) {
+	type args struct {
+		lst []int
+	}
+	tests := []struct {
+		name string
+		args args
+		want float64
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := averate(tt.args.lst); got != tt.want {
+				t.Errorf("averate() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_findMedian(t *testing.T) {
+	type args struct {
+		lst []int
+	}
+	tests := []struct {
+		name string
+		args args
+		want float64
+	}{
+		{
+			name: "empty",
+			args: args{
+				lst: []int{},
+			},
+			want: float64(math.MinInt64),
+		},
+		{
+			name: "odd",
+			args: args{
+				lst: []int{1, 2, 4},
+			},
+			want: 2.0,
+		},
+		{
+			name: "even",
+			args: args{
+				lst: []int{1, 2, 4, 7},
+			},
+			want: 3.0,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := findMedian(tt.args.lst); got != tt.want {
+				t.Errorf("findMedian() = %v, want %v", got, tt.want)
 			}
 		})
 	}
