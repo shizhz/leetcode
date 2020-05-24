@@ -1,0 +1,18 @@
+#+TITLE: Leecode algorithms problems
+
+* DONE Prlblem 4: [[file:problem_4.go][Find the median number from two sorted lists]]
+** Decs
+- tom: the first list
+- jerry: the second list
+- j: the position of median number of `tom` and `jerry` in list tom
+- k: the position of median number of `tom` and `jerry` in list jerry
+** Source file: problem_4.go
+** Solution
+*** Thought
+The key is to find `j` and `k`. then we can calculate the median number by:
+- min(tom[j:], jerry[k:]) if size(tom) + size(jerry) is odd number
+- average(max(tom[:j], jerry[:k]), min(tom[j:], jerry[k:])) if size(tom) + size(jerry) is even number
+*** Steps
+- Find the position j in tom using binary search, and at the meantime narrow down the range of k in jerry
+  How: Cos we start with tom, for any given index position x in tom(x < size(tom)), we can find out the related position y in jerry for element E = tom[x], which makes all elements in jerry[:y] less than E and jerry[y:] greater than or equal to E. 
+- When j is fixed, find k in jerry
