@@ -273,26 +273,6 @@ func Test_indexOf(t *testing.T) {
 	}
 }
 
-func Test_averate(t *testing.T) {
-	type args struct {
-		lst []int
-	}
-	tests := []struct {
-		name string
-		args args
-		want float64
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := averate(tt.args.lst); got != tt.want {
-				t.Errorf("averate() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
 func Test_findMedian(t *testing.T) {
 	type args struct {
 		lst []int
