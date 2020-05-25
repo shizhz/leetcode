@@ -101,37 +101,27 @@ func (this *expandCenter) longestPalindrome(s string) string {
 	return result
 }
 
+//////////////////////////////////
+// DP version of implementation //
+//////////////////////////////////
 type dp struct {
 	memo map[int]map[int]bool
 }
 
 func (this *dp) longestPalindrome(s string) string {
-	if len(s) == 0 {
-		return ""
-	}
-	return this.longestPalindromeBetween(s, 0, len(s)-1)
+	return this.longestPalindromeBetween(s, 0, len(s))
 }
 
 func (this *dp) longestPalindromeBetween(s string, i, j int) string {
-	if i == j {
-		return s[i : i+1]
-	}
-
-	if i+1 == j {
-		if s[i] == s[j] {
-			this.memorize(i, j, true)
-			return s[i : j+1]
-		}
-		this.memorize(i, j, false)
+	if j <= i {
 		return ""
 	}
 
-	if s[i] == s[j] {
-		if this.isPalindrome(s, i+1, j-1) {
-			this.memorize(i, j, true)
-			return s[i : j+1]
-		}
+	if this.isPalindrome(s, i, j) {
+		this.memorize(i, j, true)
+		return s[i:j]
 	}
+
 	this.memorize(i, j, false)
 	leftPalindrome, rightPalindrome := this.longestPalindromeBetween(s, i, j-1), this.longestPalindromeBetween(s, i+1, j)
 
@@ -160,10 +150,11 @@ func (this *dp) isPalindrome(s string, i, j int) bool {
 			return result
 		}
 	}
-	return isPalindrome(s[i : j+1])
+	return isPalindrome(s[i:j])
 }
 
 func longestPalindrome(s string) string {
 	// return (&bruteforce{}).longestPalindrome(s)
-	return (&expandCenter{}).longestPalindrome(s)
+	// return (&expandCenter{}).longestPalindrome(s)
+	return (&dp{map[int]map[int]bool{}}).longestPalindrome(s)
 }

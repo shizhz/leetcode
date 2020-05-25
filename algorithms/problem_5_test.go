@@ -126,19 +126,40 @@ func Test_bruteforce_substrings(t *testing.T) {
 }
 
 func Test_longestPalindrome(t *testing.T) {
-	type args struct {
-		s string
-	}
 	tests := []struct {
 		name string
-		args args
+		args string
 		want string
 	}{
-		// TODO: Add test cases.
+		{
+			name: "empty string",
+			args: "",
+			want: "",
+		},
+		{
+			name: "single char",
+			args: "a",
+			want: "a",
+		},
+		{
+			name: "no palindrome",
+			args: "abcde",
+			want: "e", // Any char is correct, but dp will return the last one
+		},
+		{
+			name: "test - 01",
+			args: "babad",
+			want: "aba", // bab is also a correct answer, but dp will return aba
+		},
+		{
+			name: "test - 02",
+			args: "cbbd",
+			want: "bb",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := longestPalindrome(tt.args.s); got != tt.want {
+			if got := longestPalindrome(tt.args); got != tt.want {
 				t.Errorf("longestPalindrome() = %v, want %v", got, tt.want)
 			}
 		})
@@ -323,7 +344,7 @@ func Test_dp_longestPalindrome(t *testing.T) {
 		{
 			name: "no palindrome",
 			args: "abcde",
-			want: "a",
+			want: "e", // Any char is correct, but dp will return the last one
 		},
 		{
 			name: "test - 01",
@@ -364,7 +385,7 @@ func Test_dp_longestPalindromeBetween(t *testing.T) {
 			args: args{
 				s: "a",
 				i: 0,
-				j: 0,
+				j: 1,
 			},
 			want: "a",
 		},
@@ -373,7 +394,7 @@ func Test_dp_longestPalindromeBetween(t *testing.T) {
 			args: args{
 				s: "aabaa",
 				i: 0,
-				j: 1,
+				j: 2,
 			},
 			want: "aa",
 		},
@@ -382,18 +403,27 @@ func Test_dp_longestPalindromeBetween(t *testing.T) {
 			args: args{
 				s: "aabaa",
 				i: 0,
-				j: 4,
+				j: 5,
 			},
 			want: "aabaa",
 		},
 		{
-			name: "test 03",
+			name: "test 04",
 			args: args{
 				s: "aabca",
 				i: 0,
-				j: 2,
+				j: 3,
 			},
 			want: "aa",
+		},
+		{
+			name: "test 05",
+			args: args{
+				s: "a",
+				i: 0,
+				j: 0,
+			},
+			want: "",
 		},
 	}
 	for _, tt := range tests {
