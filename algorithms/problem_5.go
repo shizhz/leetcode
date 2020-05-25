@@ -4,25 +4,7 @@ type palindromeFinder interface {
 	longestPalindrome(s string) string
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Brute force version, check all the substrings from a given string, and find the longest palinderome from them //
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-type bruteforce struct {
-}
-
-func (this *bruteforce) longestPalindrome(s string) string {
-	var result string
-
-	for subs := range this.substrings(s) {
-		if this.isPalindrome(subs) && len(subs) > len(result) {
-			result = subs
-		}
-	}
-
-	return result
-}
-
-func (this *bruteforce) isPalindrome(s string) bool {
+func isPalindrome(s string) bool {
 	for i := 0; i < len(s); i++ {
 		j := len(s) - i - 1
 		if j <= i {
@@ -36,6 +18,24 @@ func (this *bruteforce) isPalindrome(s string) bool {
 
 	// We treat empty string as true
 	return true
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Brute force version, check all the substrings from a given string, and find the longest palinderome from them //
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+type bruteforce struct {
+}
+
+func (this *bruteforce) longestPalindrome(s string) string {
+	var result string
+
+	for subs := range this.substrings(s) {
+		if isPalindrome(subs) && len(subs) > len(result) {
+			result = subs
+		}
+	}
+
+	return result
 }
 
 func (this *bruteforce) substrings(s string) chan string {
@@ -99,6 +99,68 @@ func (this *expandCenter) longestPalindrome(s string) string {
 	}
 
 	return result
+}
+
+type dp struct {
+	memo map[int]map[int]bool
+}
+
+func (this *dp) longestPalindrome(s string) string {
+	if len(s) == 0 {
+		return ""
+	}
+	return this.longestPalindromeBetween(s, 0, len(s)-1)
+}
+
+func (this *dp) longestPalindromeBetween(s string, i, j int) string {
+	if i == j {
+		return s[i : i+1]
+	}
+
+	if i+1 == j {
+		if s[i] == s[j] {
+			this.memorize(i, j, true)
+			return s[i : j+1]
+		}
+		this.memorize(i, j, false)
+		return ""
+	}
+
+	if s[i] == s[j] {
+		if this.isPalindrome(s, i+1, j-1) {
+			this.memorize(i, j, true)
+			return s[i : j+1]
+		}
+	}
+	this.memorize(i, j, false)
+	leftPalindrome, rightPalindrome := this.longestPalindromeBetween(s, i, j-1), this.longestPalindromeBetween(s, i+1, j)
+
+	if len(leftPalindrome) > len(rightPalindrome) {
+		return leftPalindrome
+	}
+	return rightPalindrome
+}
+
+func (this *dp) memorize(i, j int, isPalindrome bool) {
+	m, ok := this.memo[i]
+	if ok {
+		m[j] = isPalindrome
+	} else {
+		this.memo[i] = map[int]bool{
+			j: isPalindrome,
+		}
+	}
+}
+
+func (this *dp) isPalindrome(s string, i, j int) bool {
+	m, ok := this.memo[i]
+	if ok {
+		result, ok := m[j]
+		if ok {
+			return result
+		}
+	}
+	return isPalindrome(s[i : j+1])
 }
 
 func longestPalindrome(s string) string {
