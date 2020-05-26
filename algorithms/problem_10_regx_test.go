@@ -1,6 +1,8 @@
 package algorithms
 
-import "testing"
+import (
+	"testing"
+)
 
 func Test_buildPattern(t *testing.T) {
 	tests := []struct {
