@@ -90,3 +90,49 @@ func Test_reverse(t *testing.T) {
 		})
 	}
 }
+
+func Test_myAtoi(t *testing.T) {
+	tests := []struct {
+		name string
+		args string
+		want int
+	}{
+		{
+			name: "test 01",
+			args: "42",
+			want: 42,
+		},
+		{
+			name: "test 02",
+			args: "  -42",
+			want: -42,
+		},
+		{
+			name: "test 03",
+			args: "4193 with words ",
+			want: 4193,
+		},
+		{
+			name: "test 04",
+			args: "words and 987",
+			want: 0,
+		},
+		{
+			name: "test 05",
+			args: "-91283472332",
+			want: -2147483648,
+		},
+		{
+			name: "test 06",
+			args: "91283472332",
+			want: 2147483647,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := myAtoi(tt.args); got != tt.want {
+				t.Errorf("myatoi() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

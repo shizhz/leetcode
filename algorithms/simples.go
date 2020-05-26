@@ -1,6 +1,8 @@
 package algorithms
 
-import "math"
+import (
+	"math"
+)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Problem 1:                                                                                                //
@@ -39,5 +41,70 @@ func reverse(x int) int {
 		}
 	}
 
+	return int(result)
+}
+
+/////////////////////////////
+// Problem 8:			   //
+// String to Integer(atoi) //
+/////////////////////////////
+type iotaState int
+
+const (
+	start iotaState = iota
+	whitespace
+	sign
+	number
+)
+
+func myAtoi(s string) int {
+	ws, minus, plus := rune(32), rune(45), rune(43)
+	var result int64
+	var resultSign int64 = 1
+	state := start
+
+	for _, c := range s {
+		switch {
+		case c == ws:
+			switch {
+			case state == whitespace:
+				// nop, ignore leading whitespaces
+			case state == start:
+				state = whitespace
+			default:
+				goto done
+			}
+		case c == minus || c == plus:
+			switch {
+			case state == whitespace, state == start:
+				state = sign
+				if c == minus {
+					resultSign = -1
+				}
+			default:
+				goto done
+			}
+		case c >= 48 && c <= 57:
+			switch {
+			case state == whitespace, state == start, state == sign, state == number:
+				state = number
+				result = result*int64(10) + resultSign*(int64(c)-48)
+
+				if result > math.MaxInt32 {
+					return math.MaxInt32
+				}
+
+				if result < math.MinInt32 {
+					return math.MinInt32
+				}
+			default:
+				goto done
+			}
+		default:
+			goto done
+		}
+	}
+
+done:
 	return int(result)
 }
