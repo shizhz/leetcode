@@ -204,12 +204,11 @@ func Test_isPalindromeNumberImproved(t *testing.T) {
 			args: 0,
 			want: true,
 		},
-		// Number with ending 0's will fail
-		// {
-		// 	name: "test 05",
-		// 	args: 10,
-		// 	want: false,
-		// },
+		{
+			name: "test 05",
+			args: 10,
+			want: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

@@ -147,10 +147,16 @@ func isPalindromeNumber(x int) bool {
 // Then we move one step back, and compare:
 // - x == n ?
 // - x / 10 == n ? (for odd numbers, we need to remove the middle digit)
-//
-// TODO: Not correct for now, there is unresolved problem when x has ending 0's
 func isPalindromeNumberImproved(x int) bool {
 	if x < 0 {
+		return false
+	}
+
+	if x == 0 {
+		return true
+	}
+
+	if x%10 == 0 { // A number with ending 0's can not be a palindrome number
 		return false
 	}
 
