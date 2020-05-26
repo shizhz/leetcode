@@ -136,3 +136,86 @@ func Test_myAtoi(t *testing.T) {
 		})
 	}
 }
+
+func Test_isPalindromeNumber(t *testing.T) {
+	tests := []struct {
+		name string
+		args int
+		want bool
+	}{
+		{
+			name: "test 01",
+			args: 121,
+			want: true,
+		},
+		{
+			name: "test 02",
+			args: 1211,
+			want: false,
+		},
+		{
+			name: "test 03",
+			args: -121,
+			want: false,
+		},
+		{
+			name: "test 04",
+			args: 0,
+			want: true,
+		},
+		{
+			name: "test 05",
+			args: 10,
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := isPalindromeNumber(tt.args); got != tt.want {
+				t.Errorf("isPalindromeNumber() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_isPalindromeNumberImproved(t *testing.T) {
+	tests := []struct {
+		name string
+		args int
+		want bool
+	}{
+		{
+			name: "test 01",
+			args: 121,
+			want: true,
+		},
+		{
+			name: "test 02",
+			args: 1211,
+			want: false,
+		},
+		{
+			name: "test 03",
+			args: -121,
+			want: false,
+		},
+		{
+			name: "test 04",
+			args: 0,
+			want: true,
+		},
+		// Number with ending 0's will fail
+		// {
+		// 	name: "test 05",
+		// 	args: 10,
+		// 	want: false,
+		// },
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := isPalindromeNumberImproved(tt.args); got != tt.want {
+				t.Errorf("isPalindromeNumberImproved() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

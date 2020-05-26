@@ -108,3 +108,63 @@ func myAtoi(s string) int {
 done:
 	return int(result)
 }
+
+// Problem 9:
+// Palindrome Number
+// Solution: reverse the number and compare the result with the original one, use int64 to store the reserved result to avoid overflow problem
+//
+func isPalindromeNumber(x int) bool {
+	if x < 0 {
+		return false
+	}
+
+	original := x
+	var reversedNumber int64
+	for {
+		n := x % 10
+		x = x / 10
+
+		reversedNumber = reversedNumber*10 + int64(n)
+
+		if x == 0 {
+			break
+		}
+	}
+
+	return reversedNumber == int64(original)
+}
+
+// Improvement: just reverse half of the number, and compare the result with the other half
+// How do we know we that we've reached the half of the number: consider the following loop:
+// - n = x % 10
+// - x = x / 10
+// - reversedNumber = reversedNumber * 10 + n
+//
+// when reversedNumber is greater than x for the first time, we may:
+// - Just at the right middle point
+// - Have done one more step, and crossed the middle point
+//
+// Then we move one step back, and compare:
+// - x == n ?
+// - x / 10 == n ? (for odd numbers, we need to remove the middle digit)
+//
+// TODO: Not correct for now, there is unresolved problem when x has ending 0's
+func isPalindromeNumberImproved(x int) bool {
+	if x < 0 {
+		return false
+	}
+
+	reversedNumber, left := 0, x
+	for {
+		n := left % 10
+		x = left / 10
+
+		rn := reversedNumber*10 + n
+
+		if rn >= x {
+			return reversedNumber == left || reversedNumber == x
+		}
+
+		reversedNumber, left = rn, x
+	}
+}
