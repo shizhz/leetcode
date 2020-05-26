@@ -1,6 +1,6 @@
 #+TITLE: Leecode algorithms problems
 
-* DONE Prlblem 4: [[file:problem_4.go][Find the median number from two sorted lists]]
+* DONE Problem 4: [[file:problem_4.go][Find the median number from two sorted lists]]
 ** Decs
 - tom: the first list
 - jerry: the second list
