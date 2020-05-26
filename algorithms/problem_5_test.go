@@ -2,7 +2,6 @@ package algorithms
 
 import (
 	"fmt"
-	"reflect"
 	"testing"
 )
 
@@ -360,7 +359,7 @@ func Test_dp_longestPalindrome(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			this := &dp{
-				memo: map[int]map[int]bool{},
+				memo: map[int]map[int]string{},
 			}
 			if got := this.longestPalindrome(tt.args); got != tt.want {
 				t.Errorf("dp.longestPalindrome() = %v, want %v", got, tt.want)
@@ -429,7 +428,7 @@ func Test_dp_longestPalindromeBetween(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			this := &dp{
-				memo: map[int]map[int]bool{},
+				memo: map[int]map[int]string{},
 			}
 			if got := this.longestPalindromeBetween(tt.args.s, tt.args.i, tt.args.j); got != tt.want {
 				t.Errorf("dp.longestPalindromeBetween() = %v, want %v", got, tt.want)
@@ -438,159 +437,7 @@ func Test_dp_longestPalindromeBetween(t *testing.T) {
 	}
 }
 
-func Test_dp_memorize(t *testing.T) {
-	this := &dp{
-		memo: map[int]map[int]bool{
-			0: {
-				0: true,
-				1: false,
-				2: true,
-			},
-			1: {
-				9: true,
-				6: false,
-				2: false,
-			},
-		},
-	}
-	want := map[int]map[int]bool{
-		0: {
-			0: true,
-			1: false,
-			2: true,
-		},
-		1: {
-			9: true,
-			6: false,
-			2: false,
-		},
-	}
-	type args struct {
-		i            int
-		j            int
-		isPalindrome bool
-	}
-	tests := []struct {
-		name string
-		args []args
-	}{
-		{
-			name: "test - 01",
-			args: []args{
-				{
-					i:            0,
-					j:            0,
-					isPalindrome: true,
-				},
-				{
-					i:            0,
-					j:            1,
-					isPalindrome: false,
-				},
-				{
-					i:            0,
-					j:            2,
-					isPalindrome: true,
-				},
-				{
-					i:            1,
-					j:            9,
-					isPalindrome: true,
-				},
-				{
-					i:            1,
-					j:            6,
-					isPalindrome: false,
-				},
-				{
-					i:            1,
-					j:            2,
-					isPalindrome: false,
-				},
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			for _, arg := range tt.args {
-				this.memorize(arg.i, arg.j, arg.isPalindrome)
-			}
-
-			if !reflect.DeepEqual(want, this.memo) {
-				t.Errorf("dp.memorize() = %v, want %v", this.memo, want)
-			}
-		})
-	}
-}
-
-func Test_dp_isPalindrome(t *testing.T) {
-	memo := map[int]map[int]bool{
-		0: {
-			0: true,
-			1: false,
-			2: true,
-		},
-		1: {
-			9: true,
-			6: false,
-			2: false,
-		},
-	}
-	type args struct {
-		s string
-		i int
-		j int
-	}
-	tests := []struct {
-		name string
-		args args
-		want bool
-	}{
-		{
-			name: "test 01",
-			args: args{
-				s: "a",
-				i: 0,
-				j: 0,
-			},
-			want: true,
-		},
-		{
-			name: "test 02",
-			args: args{
-				s: "aa",
-				i: 0,
-				j: 1,
-			},
-			want: false,
-		},
-		{
-			name: "test 03",
-			args: args{
-				s: "aabaa",
-				i: 0,
-				j: 4,
-			},
-			want: true,
-		},
-		{
-			name: "test 04",
-			args: args{
-				s: "aabaa",
-				i: 1,
-				j: 9,
-			},
-			want: true,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			this := &dp{
-				memo: memo,
-			}
-			if got := this.isPalindrome(tt.args.s, tt.args.i, tt.args.j); got != tt.want {
-				t.Errorf("dp.isPalindrome() = %v, want %v", got, tt.want)
-			}
-		})
-	}
+func TestLeetcodeInput(t *testing.T) {
+	result := longestPalindrome("babaddtattarrattatddetartrateedredividerb")
+	fmt.Println(result)
 }

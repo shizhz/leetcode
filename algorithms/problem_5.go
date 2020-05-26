@@ -105,7 +105,7 @@ func (this *expandCenter) longestPalindrome(s string) string {
 // DP version of implementation //
 //////////////////////////////////
 type dp struct {
-	memo map[int]map[int]bool
+	memo map[int]map[int]string
 }
 
 func (this *dp) longestPalindrome(s string) string {
@@ -116,45 +116,52 @@ func (this *dp) longestPalindromeBetween(s string, i, j int) string {
 	if j <= i {
 		return ""
 	}
+	// fmt.Printf("Checkint %d, %d ", i, j)
 
-	if this.isPalindrome(s, i, j) {
-		this.memorize(i, j, true)
+	if cache, found := this.findPalindrome(s, i, j); found {
+		// fmt.Printf("Cache Hit\n")
+		return cache
+	}
+	// fmt.Printf("Cache Miss\n")
+
+	if isPalindrome(s[i:j]) {
+		this.memorize(i, j, s[i:j])
 		return s[i:j]
 	}
 
-	this.memorize(i, j, false)
 	leftPalindrome, rightPalindrome := this.longestPalindromeBetween(s, i, j-1), this.longestPalindromeBetween(s, i+1, j)
 
 	if len(leftPalindrome) > len(rightPalindrome) {
+		this.memorize(i, j, leftPalindrome)
 		return leftPalindrome
 	}
+	this.memorize(i, j, rightPalindrome)
 	return rightPalindrome
 }
 
-func (this *dp) memorize(i, j int, isPalindrome bool) {
+func (this *dp) memorize(i, j int, palindrome string) {
 	m, ok := this.memo[i]
 	if ok {
-		m[j] = isPalindrome
+		m[j] = palindrome
 	} else {
-		this.memo[i] = map[int]bool{
-			j: isPalindrome,
+		this.memo[i] = map[int]string{
+			j: palindrome,
 		}
 	}
 }
 
-func (this *dp) isPalindrome(s string, i, j int) bool {
+func (this *dp) findPalindrome(s string, i, j int) (string, bool) {
 	m, ok := this.memo[i]
 	if ok {
 		result, ok := m[j]
-		if ok {
-			return result
-		}
+		return result, ok
 	}
-	return isPalindrome(s[i:j])
+
+	return "", false
 }
 
 func longestPalindrome(s string) string {
 	// return (&bruteforce{}).longestPalindrome(s)
 	// return (&expandCenter{}).longestPalindrome(s)
-	return (&dp{map[int]map[int]bool{}}).longestPalindrome(s)
+	return (&dp{map[int]map[int]string{}}).longestPalindrome(s)
 }
