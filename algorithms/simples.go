@@ -48,10 +48,10 @@ func reverse(x int) int {
 // Problem 8:			   //
 // String to Integer(atoi) //
 /////////////////////////////
-type iotaState int
+type charType int
 
 const (
-	start iotaState = iota
+	start charType = iota
 	whitespace
 	sign
 	number
