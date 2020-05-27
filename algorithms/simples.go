@@ -397,3 +397,45 @@ func threeSum(nums []int) [][]int {
 	}
 	return result
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// Problem 16: 																		    //
+// 3Sum closest                                                                           //
+////////////////////////////////////////////////////////////////////////////////////////////
+func threeSumClosest(nums []int, target int) int {
+	sort.Ints(nums)
+
+	// fmt.Printf("Array : %v\n", nums)
+
+	if len(nums) < 3 {
+		return 0
+	}
+
+	var result int = nums[0] + nums[1] + nums[2]
+
+	tryNumbersAt := func(i, j, k int) {
+		// fmt.Printf("Try: %d, %d, %d\n", i, j, k)
+		sum := nums[i] + nums[j] + nums[k]
+		if abs(sum-target) < abs(result-target) {
+			result = sum
+		}
+	}
+
+	for i := 0; i < len(nums)-2; i++ {
+		for j := len(nums) - 1; j > i+1; j-- {
+			theSecondOne := target - (nums[i] + nums[j]) // The pefect candidate number
+
+			index := indexOf(nums, i+1, j, theSecondOne)
+			// fmt.Printf("i: %d[%d], j: %d[%d], try to find: %d. Found index: %d", i, in, j, jn, theSecondOne, index)
+			if index == j {
+				tryNumbersAt(i, j, index-1)
+			} else if index == i+1 {
+				tryNumbersAt(i, j, index)
+			} else {
+				tryNumbersAt(i, j, index)
+				tryNumbersAt(i, j, index-1)
+			}
+		}
+	}
+	return result
+}
