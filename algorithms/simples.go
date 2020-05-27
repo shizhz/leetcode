@@ -3,6 +3,7 @@ package algorithms
 import (
 	"bytes"
 	"math"
+	"strings"
 )
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -217,7 +218,7 @@ func maxArea(height []int) int {
 // Integer to Roman //
 //////////////////////
 var romanWeights []int = []int{1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1}
-var romanSymbolMap map[int]string = map[int]string{
+var romanNumberToSymbol map[int]string = map[int]string{
 	1:    "I",
 	4:    "IV",
 	5:    "V",
@@ -239,7 +240,7 @@ func intToRoman(num int) string {
 	for i := 0; i < len(romanWeights); i++ {
 		weight := romanWeights[i]
 		for j := 0; j < num/weight; j++ {
-			roman.WriteString(romanSymbolMap[weight])
+			roman.WriteString(romanNumberToSymbol[weight])
 		}
 		num = num % weight
 	}
@@ -247,11 +248,44 @@ func intToRoman(num int) string {
 	return roman.String()
 }
 
+//////////////////////
+// Problem 13:	    //
+// Roman to Integer //
+//////////////////////
+var romanSymbols []string = []string{"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"}
+var romanSymbolToNumber map[string]int = map[string]int{
+	"I":  1,
+	"IV": 4,
+	"V":  5,
+	"IX": 9,
+	"X":  10,
+	"XL": 40,
+	"L":  50,
+	"XC": 90,
+	"C":  100,
+	"CD": 400,
+	"D":  500,
+	"CM": 900,
+	"M":  1000,
+}
+
+func romanToInt(s string) int {
+	var result int
+
+	for _, symbol := range romanSymbols {
+		for strings.HasPrefix(s, symbol) {
+			result += romanSymbolToNumber[symbol]
+			s = s[len(symbol):]
+		}
+	}
+
+	return result
+}
+
 ///////////////////////////
 // Problem 14:			 //
 // Longest Common Prefix //
 ///////////////////////////
-
 func lcp(s1, s2 string) string {
 	var prefix bytes.Buffer
 	for i := 0; ; i++ {

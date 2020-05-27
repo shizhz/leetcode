@@ -421,3 +421,44 @@ func Test_longestCommonPrefix(t *testing.T) {
 		})
 	}
 }
+
+func Test_romanToInt(t *testing.T) {
+	tests := []struct {
+		name string
+		args string
+		want int
+	}{
+		{
+			name: "test 01",
+			args: "III",
+			want: 3,
+		},
+		{
+			name: "test 02",
+			args: "IV",
+			want: 4,
+		},
+		{
+			name: "test 03",
+			args: "IX",
+			want: 9,
+		},
+		{
+			name: "test 04",
+			args: "LVIII",
+			want: 58,
+		},
+		{
+			name: "test 05",
+			args: "MCMXCIV",
+			want: 1994,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := romanToInt(tt.args); got != tt.want {
+				t.Errorf("romanToInt() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
