@@ -218,3 +218,65 @@ func Test_isPalindromeNumberImproved(t *testing.T) {
 		})
 	}
 }
+
+func Test_abs(t *testing.T) {
+	type args struct {
+		r int
+	}
+	tests := []struct {
+		name string
+		args args
+		want int
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := abs(tt.args.r); got != tt.want {
+				t.Errorf("abs() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_min(t *testing.T) {
+	type args struct {
+		i int
+		j int
+	}
+	tests := []struct {
+		name string
+		args args
+		want int
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := min(tt.args.i, tt.args.j); got != tt.want {
+				t.Errorf("min() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_maxArea(t *testing.T) {
+	tests := []struct {
+		name string
+		args []int
+		want int
+	}{
+		{
+			name: "test 01",
+			args: []int{1, 8, 6, 2, 5, 4, 8, 3, 7},
+			want: 49,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := maxArea(tt.args); got != tt.want {
+				t.Errorf("maxArea() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

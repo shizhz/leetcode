@@ -109,10 +109,11 @@ done:
 	return int(result)
 }
 
-// Problem 9:
-// Palindrome Number
-// Solution: reverse the number and compare the result with the original one, use int64 to store the reserved result to avoid overflow problem
-//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Problem 9:																																    //
+// Palindrome Number																														    //
+// Solution: reverse the number and compare the result with the original one, use int64 to store the reserved result to avoid overflow problem //
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 func isPalindromeNumber(x int) bool {
 	if x < 0 {
 		return false
@@ -173,4 +174,41 @@ func isPalindromeNumberImproved(x int) bool {
 
 		reversedNumber, left = rn, x
 	}
+}
+
+//////////////////////////////////////////////////////
+// Problem 11:									    //
+// Container with most water					    //
+// Solution: max(abs(i-j) * min(I, J)) for all i, j //
+//////////////////////////////////////////////////////
+func abs(r int) int {
+	if r >= 0 {
+		return r
+	}
+
+	return -r
+}
+
+func min(i, j int) int {
+	if i < j {
+		return i
+	}
+
+	return j
+}
+
+func maxArea(height []int) int {
+	var max int
+
+	for i := 0; i < len(height)-1; i++ {
+		for j := i; j < len(height); j++ {
+			area := abs(i-j) * min(height[i], height[j])
+
+			if area > max {
+				max = area
+			}
+		}
+	}
+
+	return max
 }
