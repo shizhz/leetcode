@@ -280,3 +280,59 @@ func Test_maxArea(t *testing.T) {
 		})
 	}
 }
+
+func Test_intToRoman(t *testing.T) {
+	tests := []struct {
+		name string
+		args int
+		want string
+	}{
+		{
+			name: "test 01",
+			args: 0,
+			want: "",
+		},
+		{
+			name: "test 02",
+			args: 1,
+			want: "I",
+		},
+		{
+			name: "test 03",
+			args: 3,
+			want: "III",
+		},
+		{
+			name: "test 04",
+			args: 4,
+			want: "IV",
+		},
+		{
+			name: "test 05",
+			args: 4,
+			want: "IV",
+		},
+		{
+			name: "test 06",
+			args: 9,
+			want: "IX",
+		},
+		{
+			name: "test 07",
+			args: 58,
+			want: "LVIII",
+		},
+		{
+			name: "test 08",
+			args: 1994,
+			want: "MCMXCIV",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := intToRoman(tt.args); got != tt.want {
+				t.Errorf("intToRoman() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
