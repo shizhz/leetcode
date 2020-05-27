@@ -7,21 +7,6 @@ import (
 const asterisk byte = '*'
 const dot byte = '.'
 
-type matchType int
-
-const (
-	matchAny matchType = iota
-	matchPreviousRepeatly
-	matchExactly
-	matchFinished
-)
-
-type regexMatcher struct {
-	pattern             string
-	currentPatternIndex int
-	rollbackIndex       int
-}
-
 func buildPattern(pattern string) string {
 	p := []byte{}
 
@@ -36,89 +21,80 @@ func buildPattern(pattern string) string {
 	return string(p)
 }
 
-func newMatcher(pattern string) (*regexMatcher, error) {
-	if len(pattern) == 0 || pattern[0] == asterisk {
-		return nil, fmt.Errorf("Invalid pattern:%s", pattern)
-	}
-	return &regexMatcher{
-		pattern:       buildPattern(pattern),
-		rollbackIndex: -1,
-	}, nil
-}
+// Dynamic Programming problem
+//
+// Divive the matching problem into sub ones:
+// 1. Detect whether the first char of string matches the first char of the pattern
+// 2. If the first char matches, then go on and check if substring and sub-pattern match
+//
+// When to end:
+// - either s or p is empty
+//
+// How to divide substring:
+// - Easy, just s[1:]
+// How to divide sub-patterns:
+// - If the second char of p is not *, then just p[1:]
+// - If the second char of p is *, then we got two sub patterns here: p and p[2:]
+//
+// Use a map to save all intermediate matching results as cache for later use to avoid duplicate matching
+//
+// Note: The first char of p MUST NOT be asterisk
 
-func (this *regexMatcher) currentActualMatchType() matchType {
-	return this.matchTypeAt(this.currentPatternIndex)
-}
+var regexMatchCache map[string]bool = map[string]bool{}
 
-func (this *regexMatcher) currentEffectMatchType() matchType {
-	mt := this.matchTypeAt(this.currentPatternIndex)
-
-	if mt == matchPreviousRepeatly {
-		return this.matchTypeAt(this.currentPatternIndex - 1)
-	}
-
-	return mt
-}
-
-func (this *regexMatcher) matchTypeAt(index int) matchType {
-	if index >= len(this.pattern) {
-		return matchFinished
-	}
-	switch this.pattern[index] {
-	case dot:
-		return matchAny
-	case asterisk:
-		return matchPreviousRepeatly
-	default:
-		return matchExactly
-	}
-}
-
-func (this *regexMatcher) setRollbackIndex(index int) {
-	this.rollbackIndex = index
-}
-
-func (this *regexMatcher) match(c byte) bool {
-	var m bool
-	switch this.currentEffectMatchType() {
-	case matchExactly:
-		m = this.pattern[this.currentPatternIndex] == c
-	case matchAny:
-		m = true
+func match(s string, p string) bool {
+	if len(p) == 0 {
+		return len(s) == 0
 	}
 
-	if this.currentActualMatchType() != matchPreviousRepeatly {
-		this.currentPatternIndex += 1
+	key := fmt.Sprintf("%s-%s", s, p)
+
+	if m, found := regexMatchCache[key]; found {
+		// fmt.Printf("Cache hit: %s -> %v\n", key, m)
+		return m
 	}
 
-	return m
-}
+	pc := p[0]
 
-func (this *regexMatcher) isRollbackable() bool {
-	return this.rollbackIndex >= 0
-}
-
-func isMatch(s string, pattern string) bool {
-	matcher, err := newMatcher(pattern)
-
-	if err != nil {
+	if pc == asterisk {
+		fmt.Println("The first char of pattern can not be asterisk")
+		regexMatchCache[key] = false
 		return false
 	}
 
-	for i := 0; i < len(s); {
-		if matcher.match(s[i]) {
-			// TODO; handle rollback, this is NOT correct
-			if matcher.currentActualMatchType() == matchPreviousRepeatly {
-				matcher.setRollbackIndex(i + 1)
-			}
-			i++
-		} else if matcher.isRollbackable() {
-			matcher.currentPatternIndex += 1
-			i = matcher.rollbackIndex
+	asteriskFollows := len(p) > 1 && p[1] == asterisk
+
+	if len(s) == 0 {
+		result := asteriskFollows && match(s, p[2:])
+
+		regexMatchCache[key] = result
+		return result
+	}
+
+	sc := s[0]
+
+	firstCharMatch := sc == pc || pc == dot
+	var result bool
+
+	if !firstCharMatch {
+		if asteriskFollows {
+			result = match(s, p[2:])
+		}
+	} else {
+		if asteriskFollows {
+			result = match(s, p[2:]) || match(s[1:], p[2:]) || match(s[1:], p)
 		} else {
-			return false
+			result = match(s[1:], p[1:])
 		}
 	}
 
-	return true
+	regexMatchCache[key] = result
+
+	return result
+}
+
+func isMatch(s string, p string) bool {
+	pattern := buildPattern(p)
+
+	return match(s, pattern)
 }
