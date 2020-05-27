@@ -2,7 +2,6 @@ package algorithms
 
 import (
 	"bytes"
-	"fmt"
 	"math"
 	"sort"
 	"strings"
@@ -343,7 +342,9 @@ func threeSum(nums []int) [][]int {
 		return result
 	}
 
-	for i := 0; i < len(nums)-2; {
+	end := len(nums) - 2
+
+	for i := 0; i < end; {
 		in := nums[i]
 		if in > 0 {
 			break
@@ -359,27 +360,40 @@ func threeSum(nums []int) [][]int {
 			theSecondOne := -(in + jn)
 
 			index := indexOf(nums, i+1, j, theSecondOne)
-			fmt.Printf("i: %d[%d], j: %d[%d], try to find: %d. Found index: %d", i, in, j, jn, theSecondOne, index)
+			// fmt.Printf("i: %d[%d], j: %d[%d], try to find: %d. Found index: %d", i, in, j, jn, theSecondOne, index)
 			if index < j && nums[index] == theSecondOne {
 				// fmt.Println(" Fount It")
 				result = append(result, []int{in, theSecondOne, jn})
-			} // else {
-			// 	fmt.Println(" Not Found")
-			// }
+			}
 
-			if nums[j-1] == jn {
-				j = indexOf(nums, i+1, j, jn) - 1 // Move right part to left, Use binary search to skip the continous ones
-				// fmt.Printf("Next J:%d by binary moving\n", j)
-			} else {
+			/* Moving by simply decreasing */
+			j--
+
+			for nums[j] == nums[j+1] && j > i+1 {
 				j--
 			}
+
+			// Move right part to left, Use binary search to skip the continous ones
+			// if nums[j-1] == jn {
+			// 	j = indexOf(nums, i+1, j, jn) - 1
+			// 	// fmt.Printf("Next J:%d by binary moving\n", j)
+			// } else {
+			// 	j--
+			// }
 		}
 
-		if nums[i+1] == in {
-			i = indexOf(nums, i, len(nums), in+1) // Move left part to right, Use binary search to skip the continous ones
-		} else {
+		/* Moving by simply decreasing */
+		i++
+
+		for nums[i] == nums[i-1] && i < end {
 			i++
 		}
+
+		// if nums[i+1] == in {
+		// 	i = indexOf(nums, i, len(nums), in+1) // Move left part to right, Use binary search to skip the continous ones
+		// } else {
+		// 	i++
+		// }
 	}
 	return result
 }
