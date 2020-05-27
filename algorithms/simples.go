@@ -2,7 +2,9 @@ package algorithms
 
 import (
 	"bytes"
+	"fmt"
 	"math"
+	"sort"
 	"strings"
 )
 
@@ -320,4 +322,64 @@ func longestCommonPrefix(strs []string) string {
 	}
 
 	return prefix
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// Problem 15:															   //
+// 3Sum: Find all unique triplets in the array which gives the sum of zero //
+/////////////////////////////////////////////////////////////////////////////
+func threeSum(nums []int) [][]int {
+	sort.Ints(nums)
+
+	// fmt.Printf("Array : %v\n", nums)
+
+	var result [][]int = [][]int{}
+
+	if len(nums) < 3 {
+		return result
+	}
+
+	if nums[0] > 0 || nums[len(nums)-1] < 0 {
+		return result
+	}
+
+	for i := 0; i < len(nums)-2; {
+		in := nums[i]
+		if in > 0 {
+			break
+		}
+		j := len(nums) - 1
+
+		for {
+			jn := nums[j]
+			if j <= i+1 || jn < 0 {
+				break
+			}
+
+			theSecondOne := -(in + jn)
+
+			index := indexOf(nums, i+1, j, theSecondOne)
+			fmt.Printf("i: %d[%d], j: %d[%d], try to find: %d. Found index: %d", i, in, j, jn, theSecondOne, index)
+			if index < j && nums[index] == theSecondOne {
+				// fmt.Println(" Fount It")
+				result = append(result, []int{in, theSecondOne, jn})
+			} // else {
+			// 	fmt.Println(" Not Found")
+			// }
+
+			if nums[j-1] == jn {
+				j = indexOf(nums, i+1, j, jn) - 1 // Move right part to left, Use binary search to skip the continous ones
+				// fmt.Printf("Next J:%d by binary moving\n", j)
+			} else {
+				j--
+			}
+		}
+
+		if nums[i+1] == in {
+			i = indexOf(nums, i, len(nums), in+1) // Move left part to right, Use binary search to skip the continous ones
+		} else {
+			i++
+		}
+	}
+	return result
 }

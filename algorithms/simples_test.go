@@ -462,3 +462,46 @@ func Test_romanToInt(t *testing.T) {
 		})
 	}
 }
+
+func Test_threeSum(t *testing.T) {
+	tests := []struct {
+		name string
+		args []int
+		want [][]int
+	}{
+		{
+			name: "test 01",
+			args: []int{-1, 0, 1, 2, -1, -4},
+			want: [][]int{
+				{-1, -1, 2},
+				{-1, 0, 1},
+			},
+		},
+		{
+			name: "test 02",
+			args: []int{0, 0, 0},
+			want: [][]int{
+				{0, 0, 0},
+			},
+		},
+		{
+			name: "test 03",
+			args: []int{-2, 0, 0, 2, 2},
+			want: [][]int{
+				{-2, 0, 2},
+			},
+		},
+		{
+			name: "test 04",
+			args: []int{-3, -3, 0, -5},
+			want: [][]int{},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := threeSum(tt.args); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("threeSum() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
