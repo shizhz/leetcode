@@ -216,7 +216,6 @@ func maxArea(height []int) int {
 // Problem 12:	    //
 // Integer to Roman //
 //////////////////////
-
 var romanWeights []int = []int{1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1}
 var romanSymbolMap map[int]string = map[int]string{
 	1:    "I",
@@ -246,4 +245,45 @@ func intToRoman(num int) string {
 	}
 
 	return roman.String()
+}
+
+///////////////////////////
+// Problem 14:			 //
+// Longest Common Prefix //
+///////////////////////////
+
+func lcp(s1, s2 string) string {
+	var prefix bytes.Buffer
+	for i := 0; ; i++ {
+		if i >= len(s1) || i >= len(s2) {
+			break
+		}
+
+		if s1[i] == s2[i] {
+			prefix.WriteByte(s1[i])
+			continue
+		}
+
+		break
+	}
+
+	return prefix.String()
+}
+
+func longestCommonPrefix(strs []string) string {
+	if len(strs) == 0 {
+		return ""
+	}
+	var prefix string = strs[0]
+
+	for i := 1; i < len(strs); i++ {
+		p := lcp(prefix, strs[i])
+		if len(p) == 0 {
+			return ""
+		}
+
+		prefix = p
+	}
+
+	return prefix
 }
