@@ -405,8 +405,6 @@ func threeSum(nums []int) [][]int {
 func threeSumClosest(nums []int, target int) int {
 	sort.Ints(nums)
 
-	// fmt.Printf("Array : %v\n", nums)
-
 	if len(nums) < 3 {
 		return 0
 	}
@@ -414,7 +412,6 @@ func threeSumClosest(nums []int, target int) int {
 	var result int = nums[0] + nums[1] + nums[2]
 
 	tryNumbersAt := func(i, j, k int) {
-		// fmt.Printf("Try: %d, %d, %d\n", i, j, k)
 		sum := nums[i] + nums[j] + nums[k]
 		if abs(sum-target) < abs(result-target) {
 			result = sum
@@ -434,6 +431,10 @@ func threeSumClosest(nums []int, target int) int {
 			} else {
 				tryNumbersAt(i, j, index)
 				tryNumbersAt(i, j, index-1)
+			}
+
+			if result == target {
+				return result
 			}
 		}
 	}
