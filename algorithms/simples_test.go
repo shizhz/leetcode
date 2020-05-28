@@ -1,6 +1,7 @@
 package algorithms
 
 import (
+	"fmt"
 	"math"
 	"reflect"
 	"testing"
@@ -553,6 +554,145 @@ func Test_threeSumClosest(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := threeSumClosest(tt.args.nums, tt.args.target); got != tt.want {
 				t.Errorf("threeSumClosest() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_combLetter(t *testing.T) {
+	type args struct {
+		combs  []string
+		letter byte
+	}
+	tests := []struct {
+		name string
+		args args
+		want []string
+	}{
+		{
+			name: "test 01",
+			args: args{
+				combs:  []string{},
+				letter: 'a',
+			},
+			want: []string{"a"},
+		},
+		{
+			name: "test 02",
+			args: args{
+				combs:  []string{"a", "b", "c"},
+				letter: 'a',
+			},
+			want: []string{"aa", "ba", "ca"},
+		},
+		{
+			name: "test 03",
+			args: args{
+				combs:  []string{"aa", "ba"},
+				letter: 'a',
+			},
+			want: []string{"aaa", "baa"},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := combLetter(tt.args.combs, tt.args.letter); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("combLetter() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_comb(t *testing.T) {
+	type args struct {
+		combs   []string
+		letters string
+	}
+	tests := []struct {
+		name string
+		args args
+		want []string
+	}{
+		{
+			name: "test 01",
+			args: args{
+				combs:   []string{},
+				letters: "abc",
+			},
+			want: []string{"a", "b", "c"},
+		},
+		{
+			name: "test 02",
+			args: args{
+				combs:   []string{"a"},
+				letters: "abc",
+			},
+			want: []string{"aa", "ab", "ac"},
+		},
+		{
+			name: "test 03",
+			args: args{
+				combs:   []string{"a", "b", "cc"},
+				letters: "abc",
+			},
+			want: []string{"aa", "ab", "ac", "ba", "bb", "bc", "cca", "ccb", "ccc"},
+		},
+		{
+			name: "test 04",
+			args: args{
+				combs:   []string{"a", "b", "cc"},
+				letters: "",
+			},
+			want: []string{},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := comb(tt.args.combs, tt.args.letters)
+
+			if err := stringSliceEquals(got, tt.want); err != nil {
+				t.Errorf("comb() = %v, want %v. Reason: %s", got, tt.want, err.Error())
+			}
+		})
+	}
+}
+
+func stringSliceEquals(s1, s2 []string) error {
+	s1Map := map[string]bool{}
+	for _, val := range s1 {
+		s1Map[val] = true
+	}
+
+	if len(s2) != len(s1Map) {
+		return fmt.Errorf("Different size")
+	}
+
+	for _, ele := range s2 {
+		if !s1Map[ele] {
+			return fmt.Errorf("`%s` in the second slice but not in the first one", ele)
+		}
+	}
+
+	return nil
+}
+
+func Test_letterCombinations(t *testing.T) {
+	tests := []struct {
+		name string
+		args string
+		want []string
+	}{
+		{
+			name: "test 01",
+			args: "23",
+			want: []string{"ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := letterCombinations(tt.args)
+			if err := stringSliceEquals(got, tt.want); err != nil {
+				t.Errorf("letterCombinations() = %v, want %v. Reason: %s", got, tt.want, err.Error())
 			}
 		})
 	}

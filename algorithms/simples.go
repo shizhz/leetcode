@@ -440,3 +440,52 @@ func threeSumClosest(nums []int, target int) int {
 	}
 	return result
 }
+
+///////////////////////////////////////////
+// Problem 17:							 //
+// Letter Combinations of a Phone Number //
+///////////////////////////////////////////
+var digitToLetter map[rune]string = map[rune]string{
+	'2': "abc",
+	'3': "def",
+	'4': "ghi",
+	'5': "jkl",
+	'6': "mno",
+	'7': "pqrs",
+	'8': "tuv",
+	'9': "wxyz",
+}
+
+func combLetter(combs []string, letter byte) []string {
+	if len(combs) == 0 {
+		return []string{string(letter)}
+	}
+
+	var result []string = []string{}
+
+	for _, com := range combs {
+		result = append(result, com+string(letter))
+	}
+
+	return result
+
+}
+
+func comb(combs []string, letters string) []string {
+	if len(letters) == 0 {
+		return []string{}
+	}
+
+	return append(combLetter(combs, letters[0]), comb(combs, letters[1:])...)
+}
+
+func letterCombinations(digits string) []string {
+	var result []string = []string{}
+
+	for _, digit := range digits {
+		result = comb(result, digitToLetter[digit])
+	}
+
+	return result
+
+}
