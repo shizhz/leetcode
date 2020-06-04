@@ -879,3 +879,44 @@ func TestListNode_len(t *testing.T) {
 	assert.Equal(t, 5, listNodeSize(makeNodeList([]int{1, 2, 3, 4, 5})))
 	assert.Equal(t, 0, listNodeSize(makeNodeList([]int{})))
 }
+
+func Test_isValid(t *testing.T) {
+	tests := []struct {
+		name string
+		args string
+		want bool
+	}{
+		{
+			name: "test 01",
+			args: "[]",
+			want: true,
+		},
+		{
+			name: "test 02",
+			args: "[]{}",
+			want: true,
+		},
+		{
+			name: "test 03",
+			args: "[{]}",
+			want: false,
+		},
+		{
+			name: "test 04",
+			args: "[{}]",
+			want: true,
+		},
+		{
+			name: "test 05",
+			args: "()[]{}[{}]",
+			want: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := isValid(tt.args); got != tt.want {
+				t.Errorf("isValid() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

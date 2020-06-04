@@ -582,3 +582,55 @@ func removeNthFromEnd(head *ListNode, n int) *ListNode {
 	// return removeNthFromEndTwoLoops(head, n)
 	return removeNthFromEndOneLoop(head, n)
 }
+
+///////////////////////////////////
+// Problem 20: Valid Parentheses //
+///////////////////////////////////
+func isValid(s string) bool {
+	stack := []rune{}
+
+	match := func(c rune) bool {
+		// Improment thought: the ascii code for each char is:
+		// - ( : 40
+		// - ) : 41
+		// - [ : 91
+		// - ] : 93
+		// - { : 123
+		// - } : 125
+		// Consider the input only contains those chars, so if `c` - stack[len(stack) - 1] == 1 or 2, it must be a valid pair
+		if len(stack) == 0 {
+			return false
+		}
+		t := stack[len(stack)-1]
+		switch c {
+		case ']':
+			return t == '['
+		case '}':
+			return t == '{'
+		case ')':
+			return t == '('
+		default:
+			return false
+		}
+	}
+
+	isOpen := func(c rune) bool {
+		return c == '[' || c == '{' || c == '('
+	}
+
+	// isClose := func(c rune) bool {
+	// 	return c == ']' || c == '}' || c == ')'
+	// }
+
+	for _, c := range s {
+		if isOpen(c) {
+			stack = append(stack, c)
+		} else if match(c) {
+			stack = stack[:len(stack)-1]
+		} else {
+			return false
+		}
+	}
+
+	return len(stack) == 0
+}
