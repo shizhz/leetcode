@@ -5,6 +5,8 @@ import (
 	"math"
 	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_two_sum(t *testing.T) {
@@ -493,7 +495,7 @@ func Test_threeSumToTarget(t *testing.T) {
 			name: "test 03",
 			args: args{
 				nums:   []int{-4, -3, -2, 1, 3, 3, 5},
-				target: -6,	 
+				target: -6,
 			},
 			want: [][]int{{-4, -3, 1}},
 		},
@@ -804,7 +806,7 @@ func Test_fourSum(t *testing.T) {
 		{
 			name: "test 05",
 			args: args{
-				nums:   []int{-5, -5, 1, -2, -5, -4, -3, 3, 3, 5},
+				nums:   []int{1, -2, -5, -4, -3, 3, 3, 5},
 				target: -11,
 			},
 			want: [][]int{
@@ -819,4 +821,61 @@ func Test_fourSum(t *testing.T) {
 			}
 		})
 	}
+}
+
+func makeNodeList(nums []int) *ListNode {
+	head := &ListNode{}
+	result := head
+
+	for i := 0; i < len(nums); i++ {
+		head.Next = &ListNode{
+			Val: nums[i],
+		}
+		head = head.Next
+	}
+
+	return result.Next
+}
+
+func Test_removeNthFromEnd(t *testing.T) {
+	// list := makeNodeList([]int{1, 2, 3, 4, 5})
+
+	type args struct {
+		head *ListNode
+		n    int
+	}
+	tests := []struct {
+		name string
+		args args
+		want *ListNode
+	}{
+		{
+			name: "test 01",
+			args: args{
+				head: makeNodeList([]int{1, 2, 3, 4, 5}),
+				n:    2,
+			},
+			want: makeNodeList([]int{1, 2, 3, 5}),
+		},
+		{
+			name: "test 02",
+			args: args{
+				head: makeNodeList([]int{1}),
+				n:    1,
+			},
+			want: makeNodeList([]int{}),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := removeNthFromEnd(tt.args.head, tt.args.n); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("removeNthFromEnd() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestListNode_len(t *testing.T) {
+	assert.Equal(t, 5, listNodeSize(makeNodeList([]int{1, 2, 3, 4, 5})))
+	assert.Equal(t, 0, listNodeSize(makeNodeList([]int{})))
 }

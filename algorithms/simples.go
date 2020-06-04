@@ -501,3 +501,84 @@ func fourSum(nums []int, target int) [][]int {
 
 	return result
 }
+
+//////////////////////////////////////////////////
+// Problem 19: Remove Nth Node From End of List //
+//////////////////////////////////////////////////
+
+type ListNode struct {
+	Val  int
+	Next *ListNode
+}
+
+func (this *ListNode) String() string {
+	ints := []int{}
+
+	for this != nil {
+		ints = append(ints, this.Val)
+		this = this.Next
+	}
+
+	return fmt.Sprint(ints)
+}
+
+func listNodeSize(this *ListNode) int {
+	size := 0
+
+	for this != nil {
+		size++
+		this = this.Next
+	}
+
+	return size
+}
+
+// Stratforward method:
+// 1. Loop one time to count how many nodes the list has
+// 2. Remove the target node
+func removeNthFromEndTwoLoops(head *ListNode, n int) *ListNode {
+	size := listNodeSize(head)
+
+	h := &ListNode{
+		Next: head,
+	}
+
+	node := h
+
+	for i := 0; i < size-n; i++ {
+		node = node.Next
+	}
+
+	node.Next = node.Next.Next
+
+	return h.Next
+}
+
+// One loop algorithm: use two pointer P1 and P2, and make indexOf(P2) - indexOf(P1) = n + 1, thus when P2 reaches the end(nil), P1 will be
+// the previous index of the target node. Then make P1.Next = P1.Next.Next and return head
+func removeNthFromEndOneLoop(head *ListNode, n int) *ListNode {
+	h := &ListNode{
+		Next: head,
+	}
+
+	p1, p2 := h, h
+	step := 0
+
+	for p2 != nil {
+		p2 = p2.Next
+		if step == n+1 {
+			p1 = p1.Next
+		} else {
+			step++
+		}
+	}
+
+	p1.Next = p1.Next.Next
+
+	return h.Next
+}
+
+func removeNthFromEnd(head *ListNode, n int) *ListNode {
+	// return removeNthFromEndTwoLoops(head, n)
+	return removeNthFromEndOneLoop(head, n)
+}
