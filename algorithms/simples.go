@@ -2,6 +2,7 @@ package algorithms
 
 import (
 	"bytes"
+	"fmt"
 	"math"
 	"sort"
 	"strings"
@@ -327,7 +328,7 @@ func longestCommonPrefix(strs []string) string {
 // Problem 15:															   //
 // 3Sum: Find all unique triplets in the array which gives the sum of zero //
 /////////////////////////////////////////////////////////////////////////////
-func threeSum(nums []int) [][]int {
+func threeSumToTarget(nums []int, target int) [][]int {
 	sort.Ints(nums)
 
 	// fmt.Printf("Array : %v\n", nums)
@@ -338,31 +339,23 @@ func threeSum(nums []int) [][]int {
 		return result
 	}
 
-	if nums[0] > 0 || nums[len(nums)-1] < 0 {
-		return result
-	}
-
 	end := len(nums) - 2
 
 	for i := 0; i < end; {
 		in := nums[i]
-		if in > 0 {
-			break
-		}
 		j := len(nums) - 1
 
 		for {
 			jn := nums[j]
-			if j <= i+1 || jn < 0 {
+			if j <= i+1 {
 				break
 			}
 
-			theSecondOne := -(in + jn)
+			theSecondOne := target - (in + jn)
 
 			index := indexOf(nums, i+1, j, theSecondOne)
-			// fmt.Printf("i: %d[%d], j: %d[%d], try to find: %d. Found index: %d", i, in, j, jn, theSecondOne, index)
+			// fmt.Printf("%v, i: %d[%d], j: %d[%d], try to find: %d. Found index: %d\n", nums, i, in, j, jn, theSecondOne, index)
 			if index < j && nums[index] == theSecondOne {
-				// fmt.Println(" Fount It")
 				result = append(result, []int{in, theSecondOne, jn})
 			}
 
@@ -372,14 +365,6 @@ func threeSum(nums []int) [][]int {
 			for nums[j] == nums[j+1] && j > i+1 {
 				j--
 			}
-
-			// Move right part to left, Use binary search to skip the continous ones
-			// if nums[j-1] == jn {
-			// 	j = indexOf(nums, i+1, j, jn) - 1
-			// 	// fmt.Printf("Next J:%d by binary moving\n", j)
-			// } else {
-			// 	j--
-			// }
 		}
 
 		/* Moving by simply decreasing */
@@ -388,14 +373,12 @@ func threeSum(nums []int) [][]int {
 		for nums[i] == nums[i-1] && i < end {
 			i++
 		}
-
-		// if nums[i+1] == in {
-		// 	i = indexOf(nums, i, len(nums), in+1) // Move left part to right, Use binary search to skip the continous ones
-		// } else {
-		// 	i++
-		// }
 	}
 	return result
+}
+
+func threeSum(nums []int) [][]int {
+	return threeSumToTarget(nums, 0)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -498,6 +481,23 @@ func fourSum(nums []int, target int) [][]int {
 	sort.Ints(nums)
 
 	var result [][]int = [][]int{}
+
+	for i := 0; i < len(nums)-3; i++ {
+		// skip same numbers
+		if i > 0 && nums[i] == nums[i-1] {
+			continue
+		}
+
+		subCombinations := threeSumToTarget(nums[i+1:], target-nums[i])
+
+		fmt.Printf("Nums: %v, Got Coms: %v. nums: %v, target: %d\n", nums, subCombinations, nums[i+1:], target-nums[i])
+
+		for _, c := range subCombinations {
+			com := append(c, nums[i])
+			sort.Ints(com)
+			result = append(result, com)
+		}
+	}
 
 	return result
 }
