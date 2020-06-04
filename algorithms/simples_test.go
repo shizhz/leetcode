@@ -920,3 +920,50 @@ func Test_isValid(t *testing.T) {
 		})
 	}
 }
+
+func Test_mergeTwoLists(t *testing.T) {
+	type args struct {
+		l1 *ListNode
+		l2 *ListNode
+	}
+	tests := []struct {
+		name string
+		args args
+		want *ListNode
+	}{
+		{
+			name: "test 01",
+			args: args{
+				l1: makeNodeList([]int{1, 2, 4}),
+				l2: makeNodeList([]int{1, 3, 4}),
+			},
+			want: makeNodeList([]int{1, 1, 2, 3, 4, 4}),
+		},
+		{
+			name: "test 02",
+			args: args{
+				l2: makeNodeList([]int{1, 3, 4}),
+			},
+			want: makeNodeList([]int{1, 3, 4}),
+		},
+		{
+			name: "test 03",
+			args: args{
+				l1: makeNodeList([]int{1, 3, 4}),
+			},
+			want: makeNodeList([]int{1, 3, 4}),
+		},
+		{
+			name: "test 04",
+			args: args{},
+			want: nil,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := mergeTwoLists(tt.args.l1, tt.args.l2); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("mergeTwoLists() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
