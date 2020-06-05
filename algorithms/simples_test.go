@@ -1092,3 +1092,172 @@ func Test_swapPairs(t *testing.T) {
 		})
 	}
 }
+
+func Test_rotateList(t *testing.T) {
+	type args struct {
+		head *ListNode
+		i    int
+		j    int
+	}
+	tests := []struct {
+		name string
+		args args
+		want *ListNode
+	}{
+		{
+			name: "test 01",
+			args: args{
+				head: makeNodeList([]int{1, 2, 3, 4, 5}),
+				i:    2,
+				j:    4,
+			},
+			want: makeNodeList([]int{1, 2, 5, 3, 4}),
+		},
+		{
+			name: "test 02",
+			args: args{
+				head: makeNodeList([]int{1, 2, 3, 4, 5}),
+				i:    1,
+				j:    4,
+			},
+			want: makeNodeList([]int{1, 5, 2, 3, 4}),
+		},
+		{
+			name: "test 03",
+			args: args{
+				head: makeNodeList([]int{1, 2, 3, 4, 5}),
+				i:    1,
+				j:    7,
+			},
+			want: makeNodeList([]int{1, 2, 3, 4, 5}),
+		},
+		{
+			name: "test 04",
+			args: args{
+				head: nil,
+				i:    1,
+				j:    7,
+			},
+			want: nil,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := rotateList(tt.args.head, tt.args.i, tt.args.j); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("rotateList() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_reverseTopNOfList(t *testing.T) {
+	type args struct {
+		head *ListNode
+		n    int
+	}
+	tests := []struct {
+		name string
+		args args
+		want *ListNode
+	}{
+		{
+			name: "test 01",
+			args: args{
+				head: nil,
+				n:    1,
+			},
+			want: nil,
+		},
+		{
+			name: "test 02",
+			args: args{
+				head: makeNodeList([]int{1, 2, 3, 4, 5}),
+				n:    1,
+			},
+			want: makeNodeList([]int{1, 2, 3, 4, 5}),
+		},
+		{
+			name: "test 03",
+			args: args{
+				head: makeNodeList([]int{1, 2, 3, 4, 5}),
+				n:    2,
+			},
+			want: makeNodeList([]int{2, 1, 3, 4, 5}),
+		},
+		{
+			name: "test 04",
+			args: args{
+				head: makeNodeList([]int{1, 2, 3, 4, 5}),
+				n:    3,
+			},
+			want: makeNodeList([]int{3, 2, 1, 4, 5}),
+		},
+		{
+			name: "test 05",
+			args: args{
+				head: makeNodeList([]int{1, 2, 3, 4, 5}),
+				n:    4,
+			},
+			want: makeNodeList([]int{4, 3, 2, 1, 5}),
+		},
+		{
+			name: "test 06",
+			args: args{
+				head: makeNodeList([]int{1, 2, 3, 4, 5}),
+				n:    5,
+			},
+			want: makeNodeList([]int{5, 4, 3, 2, 1}),
+		},
+		{
+			name: "test 07",
+			args: args{
+				head: makeNodeList([]int{1, 2, 3, 4, 5}),
+				n:    6,
+			},
+			want: makeNodeList([]int{1, 2, 3, 4, 5}),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got, _ := reverseTopNOfList(tt.args.head, tt.args.n); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("reverseTopNOfList() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_reverseKGroup(t *testing.T) {
+	type args struct {
+		head *ListNode
+		k    int
+	}
+	tests := []struct {
+		name string
+		args args
+		want *ListNode
+	}{
+		{
+			name: "test 01",
+			args: args{
+				head: makeNodeList([]int{1, 2, 3, 4, 5}),
+				k:    2,
+			},
+			want: makeNodeList([]int{2, 1, 4, 3, 5}),
+		},
+		{
+			name: "test 02",
+			args: args{
+				head: makeNodeList([]int{1, 2, 3, 4, 5}),
+				k:    3,
+			},
+			want: makeNodeList([]int{3, 2, 1, 4, 5}),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := reverseKGroup(tt.args.head, tt.args.k); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("reverseKGroup() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

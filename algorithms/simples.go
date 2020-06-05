@@ -760,3 +760,95 @@ func swapPairs(head *ListNode) *ListNode {
 
 	return result.Next
 }
+
+// Problem 25: Reverse Nodes in k-Group
+// Rotate the list of range [i, j] for one element, e.g, if input are:
+// - list : [1,2,3,4,5]
+// - i: 2
+// - j: 4
+// then the output becomes: [1, 2, 5, 3, 4]
+func rotateList(head *ListNode, i, j int) *ListNode {
+	if i == j {
+		return head
+	}
+	if i > j {
+		i, j = j, i
+	}
+
+	result := &ListNode{
+		Next: head,
+	}
+
+	previ := result
+	prevj := result
+
+	for k := 0; k < j; k++ {
+		if previ == nil || prevj == nil {
+			return head
+		}
+		if k < i {
+			previ = previ.Next
+		}
+		prevj = prevj.Next
+	}
+
+	nodei := previ.Next
+	nodej := prevj.Next
+
+	prevj.Next = nodej.Next
+	previ.Next = nodej
+
+	nodej.Next = nodei
+
+	return result.Next
+}
+
+func reverseTopNOfList(head *ListNode, n int) (*ListNode, bool) {
+	if n <= 1 {
+		return head, false
+	}
+
+	tail := head
+
+	// Make sure there're enough elements left, otherwise don't do anything
+	for i := 0; i < n; i++ {
+		if tail == nil {
+			return head, false
+		}
+		tail = tail.Next
+	}
+
+	prevNode := head
+	node := head.Next
+	head.Next = tail
+
+	for i := 1; i < n; i++ {
+		temp := node.Next
+		node.Next = prevNode
+		prevNode = node
+		node = temp
+	}
+
+	return prevNode, true
+}
+
+func reverseKGroup(head *ListNode, k int) *ListNode {
+	resultHead, reversed := reverseTopNOfList(head, k)
+
+	subHead := resultHead
+
+	for reversed {
+		for i := 0; i < k-1; i++ {
+			subHead = subHead.Next
+		}
+
+		if reversedHead, yes := reverseTopNOfList(subHead.Next, k); yes {
+			subHead.Next = reversedHead
+			subHead = subHead.Next
+		} else {
+			reversed = false
+		}
+	}
+
+	return resultHead
+}
