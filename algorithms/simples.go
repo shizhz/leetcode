@@ -699,3 +699,39 @@ func generateParenthesis(n int) []string {
 
 	return result
 }
+
+// Problem 23 Merge k Sorted Lists
+func mergeKLists(lists []*ListNode) *ListNode {
+	heads := make([]*ListNode, len(lists))
+	for i := 0; i < len(lists); i++ {
+		heads[i] = lists[i]
+	}
+
+	var minIndex int = -1
+	var minValue int
+
+	result := &ListNode{}
+	node := result
+
+	for {
+		for index, head := range heads {
+			if head != nil {
+				if minIndex == -1 || head.Val < minValue {
+					minIndex, minValue = index, head.Val
+				}
+			}
+		}
+		if minIndex == -1 {
+			break
+		}
+
+		node.Next = &ListNode{
+			Val: minValue,
+		}
+		node = node.Next
+		heads[minIndex] = heads[minIndex].Next
+		minIndex = -1
+	}
+
+	return result.Next
+}
