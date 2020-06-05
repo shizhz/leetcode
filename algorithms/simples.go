@@ -868,3 +868,27 @@ func removeDuplicates(nums []int) int {
 
 	return index + 1
 }
+
+// 27. Remove Element
+func removeElement(nums []int, val int) int {
+	indices := []int{}
+	size := 0
+	for i := 0; i < len(nums); i++ {
+		if nums[i] == val {
+			indices = append(indices, i)
+		} else {
+			size++
+			if len(indices) > 0 {
+				nums[indices[0]] = nums[i]
+				indices = append(indices[1:], i)
+			}
+		}
+	}
+
+	return size
+}
+
+// 28. Implement strStr()
+func strStr(haystack string, needle string) int {
+	return strings.Index(haystack, needle) // hahahahahahahaha
+}
