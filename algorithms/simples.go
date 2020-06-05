@@ -852,3 +852,19 @@ func reverseKGroup(head *ListNode, k int) *ListNode {
 
 	return resultHead
 }
+
+// 26. Remove Duplicates from Sorted Array
+func removeDuplicates(nums []int) int {
+	var index int
+
+	for i := 1; i < len(nums); i++ {
+		if nums[i] == nums[index] {
+			continue
+		}
+
+		nums[index+1] = nums[i]
+		index++
+	}
+
+	return index + 1
+}
