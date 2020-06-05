@@ -662,3 +662,40 @@ func mergeTwoLists(l1 *ListNode, l2 *ListNode) *ListNode {
 
 	return head.Next
 }
+
+// Problem 22: Generate parentheses
+func doGenerateParenthesis(rcv chan string, s string, left, right int) {
+	if left == 0 && right == 0 {
+		rcv <- s
+		return
+	}
+
+	if left == 0 {
+		doGenerateParenthesis(rcv, s+")", left, right-1)
+		return
+	}
+
+	if left < right {
+		doGenerateParenthesis(rcv, s+"(", left-1, right)
+		doGenerateParenthesis(rcv, s+")", left, right-1)
+	} else {
+		doGenerateParenthesis(rcv, s+"(", left-1, right)
+	}
+}
+
+func generateParenthesis(n int) []string {
+	ch := make(chan string)
+
+	result := []string{}
+
+	go func() {
+		defer close(ch)
+		doGenerateParenthesis(ch, "", n, n)
+	}()
+
+	for s := range ch {
+		result = append(result, s)
+	}
+
+	return result
+}

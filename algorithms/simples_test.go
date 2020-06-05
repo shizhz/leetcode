@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"reflect"
+	"sort"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -709,7 +710,7 @@ func stringSliceEquals(s1, s2 []string) error {
 	}
 
 	if len(s2) != len(s1Map) {
-		return fmt.Errorf("Different size")
+		return fmt.Errorf("Different size. s1: %d, s2: %d", len(s1Map), len(s2))
 	}
 
 	for _, ele := range s2 {
@@ -963,6 +964,44 @@ func Test_mergeTwoLists(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := mergeTwoLists(tt.args.l1, tt.args.l2); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("mergeTwoLists() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_generateParenthesis(t *testing.T) {
+	tests := []struct {
+		name string
+		args int
+		want []string
+	}{
+		{
+			name: "test 01",
+			args: 3,
+			want: []string{
+				"((()))",
+				"(()())",
+				"(())()",
+				"()(())",
+				"()()()",
+			},
+		},
+		{
+			name: "test 02",
+			args: 4,
+			want: []string{
+				"(((())))", "((()()))", "((())())", "((()))()", "(()(()))", "(()()())", "(()())()", "(())(())", "(())()()", "()((()))", "()(()())", "()(())()", "()()(())", "()()()()",
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := generateParenthesis(tt.args)
+			sort.Strings(got)
+			sort.Strings(tt.want)
+			fmt.Printf("Got: %s, Size: %d\nExp: %s, Size: %d\n", got, len(got), tt.want, len(tt.want))
+			if err := stringSliceEquals(got, tt.want); err != nil {
+				t.Errorf("generateParenthesis() = %v, want %v. Reason: %s", got, tt.want, err)
 			}
 		})
 	}
