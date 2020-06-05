@@ -735,3 +735,28 @@ func mergeKLists(lists []*ListNode) *ListNode {
 
 	return result.Next
 }
+
+// Problem 24: Swap Nodes in Pairs
+func swapPairs(head *ListNode) *ListNode {
+	result := &ListNode{
+		Next: head,
+	}
+
+	prev := result
+
+	for {
+		if head == nil || head.Next == nil {
+			break
+		}
+
+		temp := head.Next
+		head.Next = temp.Next
+		temp.Next = head
+		prev.Next = temp
+
+		prev = head
+		head = head.Next
+	}
+
+	return result.Next
+}
