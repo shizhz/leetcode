@@ -1319,7 +1319,7 @@ func Test_removeElement(t *testing.T) {
 			args: args{
 				nums: []int{0, 1, 2, 2, 3, 0, 4, 2},
 				val:  2,
-			},	  
+			},
 			want: 5,
 		},
 	}
@@ -1329,5 +1329,83 @@ func Test_removeElement(t *testing.T) {
 				t.Errorf("removeElement() = %v, want %v", got, tt.want)
 			}
 		})
+	}
+}
+
+func Test_divide(t *testing.T) {
+	type args struct {
+		dividend int
+		divisor  int
+	}
+	tests := []struct {
+		name string
+		args args
+		want int
+	}{
+		{
+			name: "test 01",
+			args: args{
+				dividend: 100,
+				divisor:  3,
+			},
+			want: 33,
+		},
+		{
+			name: "test 02",
+			args: args{
+				dividend: -99,
+				divisor:  3,
+			},
+			want: -33,
+		},
+		{
+			name: "test 03",
+			args: args{
+				dividend: -99,
+				divisor:  0,
+			},
+			want: 0,
+		},
+		{
+			name: "test 04",
+			args: args{
+				dividend: math.MinInt32,
+				divisor:  -1,
+			},
+			want: math.MaxInt32,
+		},
+		{
+			name: "test 05",
+			args: args{
+				dividend: 100,
+				divisor:  2,
+			},
+			want: 50,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := divide(tt.args.dividend, tt.args.divisor); got != tt.want {
+				t.Errorf("divide() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func BenchmarkDivideBySubstraction(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		divideBySubstraction(10000, 3)
+	}
+}
+
+func BenchmarkDivideByBitShiftAndSubstraction(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		divideByBitShiftAndSubstraction(10000, 3)
+	}
+}
+
+func BenchmarkDivideByBitShiftOnly(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		divideByBitShiftOnly(10000, 3)
 	}
 }

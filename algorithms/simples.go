@@ -490,7 +490,7 @@ func fourSum(nums []int, target int) [][]int {
 
 		subCombinations := threeSumToTarget(nums[i+1:], target-nums[i])
 
-		fmt.Printf("Nums: %v, Got Coms: %v. nums: %v, target: %d\n", nums, subCombinations, nums[i+1:], target-nums[i])
+		// fmt.Printf("Nums: %v, Got Coms: %v. nums: %v, target: %d\n", nums, subCombinations, nums[i+1:], target-nums[i])
 
 		for _, c := range subCombinations {
 			com := append(c, nums[i])
@@ -891,4 +891,102 @@ func removeElement(nums []int, val int) int {
 // 28. Implement strStr()
 func strStr(haystack string, needle string) int {
 	return strings.Index(haystack, needle) // hahahahahahahaha
+}
+
+// 29. Divide Two Integers
+// The key is using substraction, after handling the sign seperately, for the case of two positive numbers,
+// the number of times we can substract divisor from dividend, is the result of quotient
+// 该题的核心思想是使用减法，在对符号进行过处理，只考虑两个正数相除的前提下，能够从dividend中减去多少个divisor，那么商就是多少
+//
+// And the optimization is trying to substract divisor from dividend as fast as possiable
+// 优化的方式便是，想办法尽可能快的从dividend中减去足够的divisor
+
+// Implementation 1: Substract only one divisor from dividend each loop, this is the most straightforward but also the worst method
+// 实现方案一：每次从dividend中减去一个divisor，直到不能减为止，这是最直观也是最差的方案
+func divideBySubstraction(absDividend uint64, absDivisor uint64) int {
+
+	var result int
+
+	for {
+		if absDividend-absDivisor >= absDivisor {
+			absDividend -= absDivisor
+			result++
+			continue
+		}
+		break
+	}
+
+	return result + 1
+}
+
+// Implementation 2: With the help of bit shift operation, we can test whether (dividend>>1 > divisor),
+// if so, we know this is true: divident > divisor * 2, so we can substract two divisors from dividend for this loop
+// if not, we know we can substract at most one more divisor from dividend
+// 实现方案二：借助于移位操作，我们可以测试dividend>>1之后是否还大于divisor，dividend>>1相当于dividend / 2， 这样的话说明dividend > divisor * 2是成立的，
+// 根据该不等式，我们无法知道1/2的dividend最多可以减去多少个divisor，但是我们可以知道至少减去2个divisor是可以的；如果dividend>>1已经小于divisor，那么可知
+// 最多只能减去一个divisor了
+//
+// 事实证明：这个实现比纯粹使用减法还差劲！！
+func divideByBitShiftAndSubstraction(absDividend uint64, absDivisor uint64) int {
+	var result int
+
+	for {
+		if (absDividend >> 1) > absDivisor {
+			result += 2
+			absDividend = absDividend - absDivisor<<1
+			continue
+		}
+		break
+	}
+	return result + divideBySubstraction(absDividend, absDivisor)
+}
+
+// Implementation 3: Let's try reversed thinking and see theoretically at most how many advisors we can substrct from dividend for each loop:
+// Say the final quotient has binary reprentation of: 1011011011, which is 2^9 + 2^7 + 2^6 + 2^4 + 2^3 + 2^1 + 2^0,
+// then how could we find a way to substract divisors from dividend by the order of (2^9, 2^7, 2^6, 2^4, 2^3, 2^1, 2^0)?
+// In implementation 2 we try bit-shift with one bit each time, but if we try bit-shift with this order (31, 30, 29....0), for all the numbers n,
+// which satisfies dividend >> n >= divisor, we know we can safely substract 2^n divisors from dividend and continue the loop
+// 实现方案三：回到最初的思路上来：如何每次减去最多的advisor？在方法二中我们每次移一个位，所以每次最多只能减去2个divisor，考虑到实际上被除数与除数是32位整数，那么可以由高到底地
+// 对被除数进行移位（31,30,29....0），对于每一个dividend >> n > divisor, 我们都可以安全地减掉2^n个divisor
+func divideByBitShiftOnly(absDividend, absDivisor uint64) int {
+	var result int
+
+	for i := 31; i >= 0; i-- {
+		if absDividend>>i >= absDivisor {
+			absDividend -= absDivisor << i
+			result += (1 << i)
+		}
+	}
+
+	return result
+
+}
+
+func divide(dividend int, divisor int) int {
+	if dividend == 0 || divisor == 0 {
+		return 0
+	}
+
+	// Overflow
+	if dividend == math.MinInt32 && divisor == -1 {
+		return math.MaxInt32
+	}
+
+	sign := dividend^divisor < 0
+
+	absDividend := uint64(math.Abs(float64(dividend)))
+	absDivisor := uint64(math.Abs(float64(divisor)))
+
+	if absDividend < absDivisor {
+		return 0
+	}
+
+	// q := divideBySubstraction(absDividend, absDivisor)
+	// q := divideByBitShiftAndSubstraction(absDividend, absDivisor)
+	q := divideByBitShiftOnly(absDividend, absDivisor)
+	if sign {
+		return -q
+	}
+
+	return q
 }
