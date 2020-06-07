@@ -898,7 +898,7 @@ func strStr(haystack string, needle string) int {
 // the number of times we can substract divisor from dividend, is the result of quotient
 // 该题的核心思想是使用减法，在对符号进行过处理，只考虑两个正数相除的前提下，能够从dividend中减去多少个divisor，那么商就是多少
 //
-// And the optimization is trying to substract divisor from dividend as fast as possiable
+// And the optimization is trying to substract divisor from dividend as fast as possiable(as many as possiable for each loop)
 // 优化的方式便是，想办法尽可能快的从dividend中减去足够的divisor
 
 // Implementation 1: Substract only one divisor from dividend each loop, this is the most straightforward but also the worst method
@@ -989,4 +989,82 @@ func divide(dividend int, divisor int) int {
 	}
 
 	return q
+}
+
+// 30. Substring with Concatenation of All Words
+func permsOfSize(size int) [][]int {
+	if size <= 0 {
+		return [][]int{{0}}
+	}
+
+	perms := [][]int{}
+
+	subPerms := permsOfSize(size - 1)
+	for _, subPerm := range subPerms {
+		for i := 0; i < len(subPerm); i++ {
+			perm := []int{}
+			for j := 0; j < len(subPerm); j++ {
+				if i == j {
+					perm = append(perm, size)
+				}
+				perm = append(perm, subPerm[j])
+			}
+			perms = append(perms, perm)
+		}
+
+		perms = append(perms, append(subPerm, size))
+
+		// 	for i := 0; i <= len(subPerm); i++ {
+		// TODO: Wrong implementation: append(subPerm[:i], size) will change the underneath array, which will affect following loop. Keep it here
+		// 		perm := append(append(subPerm[:i], size), subPerm[i:]...)
+		// 		perms = append(perms, perm)
+		// 		fmt.Printf("subPerm: %v, perms: %v\n", subPerm, perms)
+		// 	}
+	}
+
+	return perms
+}
+
+func permsOfwords(words []string) chan string {
+	var ch chan string = make(chan string)
+
+	go func() {
+		defer close(ch)
+
+		duplicateSet := map[string]bool{}
+		for _, permIndices := range permsOfSize(len(words) - 1) {
+
+			var b bytes.Buffer
+
+			for _, index := range permIndices {
+				b.WriteString(words[index])
+			}
+
+			perm := b.String()
+			if !duplicateSet[perm] {
+				duplicateSet[perm] = true
+
+				ch <- perm
+			}
+		}
+	}()
+	return ch
+}
+
+func findSubstring(s string, words []string) []int {
+	result := []int{}
+
+	for perm := range permsOfwords(words) {
+		temp := s
+		for {
+			if index := strings.Index(temp, perm); index != -1 {
+				result = append(result, index)
+				temp = s[index+1:]
+			} else {
+				break
+			}
+		}
+	}
+
+	return result
 }

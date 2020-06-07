@@ -1409,3 +1409,71 @@ func BenchmarkDivideByBitShiftOnly(b *testing.B) {
 		divideByBitShiftOnly(10000, 3)
 	}
 }
+
+func Test_permsOfSize(t *testing.T) {
+	tests := []struct {
+		name string
+		args int
+		want [][]int
+	}{
+		{
+			name: "test 01",
+			args: 1,
+			want: [][]int{{1, 0}, {0, 1}},
+		},
+		{
+			name: "test 02",
+			args: 2,
+			want: [][]int{{2, 1, 0}, {1, 2, 0}, {1, 0, 2}, {2, 0, 1}, {0, 2, 1}, {0, 1, 2}},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := permsOfSize(tt.args); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("permsOfSize() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_permsOfwords(t *testing.T) {
+	for perm := range permsOfwords([]string{"foo", "bar", "foo"}) {
+		fmt.Println(perm)
+	}
+}
+
+func Test_findSubstring(t *testing.T) {
+	type args struct {
+		s     string
+		words []string
+	}
+	tests := []struct {
+		name string
+		args args
+		want []int
+	}{
+		{
+			name: "test 01",
+			args: args{
+				s:     "barfoothefoobarman",
+				words: []string{"foo", "bar"},
+			},
+			want: []int{0, 9},
+		},
+		{
+			name: "test 02",
+			args: args{
+				s:     "wordgoodgoodgoodbestword",
+				words: []string{"word", "good", "best", "word"},
+			},
+			want: []int{},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := findSubstring(tt.args.s, tt.args.words); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("findSubstring() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
