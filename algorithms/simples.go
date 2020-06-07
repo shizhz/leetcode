@@ -991,7 +991,7 @@ func divide(dividend int, divisor int) int {
 	return q
 }
 
-// 30. Substring with Concatenation of All Words
+// Problem 30. Substring with Concatenation of All Words
 func permsOfSize(size int) [][]int {
 	if size <= 0 {
 		return [][]int{{0}}
