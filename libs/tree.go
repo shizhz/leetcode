@@ -253,6 +253,54 @@ func BSTInsert(root *BSTNode, val int) *BSTNode {
 	return bstInsert(root, val, bstNopCallback)
 }
 
+func BSTMinimum(root *BSTNode) *BSTNode {
+	for root.Left != nil {
+		root = root.Left
+	}
+
+	return root
+}
+
+func BSTMaximum(root *BSTNode) *BSTNode {
+	for root.Right != nil {
+		root = root.Right
+	}
+
+	return root
+}
+
+// 为了能够通过递归的方式删除后继节点，必须将counter作为参数传递下去
+func bstDeleteRecursively(root *BSTNode, val int, counter uint, callback func(*BSTNode) *BSTNode) (result *BSTNode) {
+	if root == nil {
+		return nil
+	}
+
+	defer func() {
+		result = callback(result)
+	}()
+
+	if root.Val > val {
+		root.Left = bstDeleteRecursively(root.Left, val, counter, callback)
+	} else if root.Val < val {
+		root.Right = bstDeleteRecursively(root.Right, val, counter, callback)
+	} else {
+		root.counter = root.counter - counter
+
+		if root.counter == 0 {
+			if root.Right == nil {
+				return root.Left
+			}
+
+			successor := BSTMinimum(root.Right)
+			root.Val = successor.Val
+			root.counter = successor.counter
+			root.Right = bstDeleteRecursively(root.Right, successor.Val, successor.counter, callback)
+		}
+	}
+
+	return root
+}
+
 func bstDelete(root *BSTNode, val int, callback func(*BSTNode) *BSTNode) (result *BSTNode) {
 	if root == nil {
 		return nil
@@ -294,9 +342,9 @@ func bstDelete(root *BSTNode, val int, callback func(*BSTNode) *BSTNode) (result
 			return root
 		}
 	} else if root.Val > val {
-		root.Left = BSTDelete(root.Left, val)
+		root.Left = bstDelete(root.Left, val, callback)
 	} else {
-		root.Right = BSTDelete(root.Right, val)
+		root.Right = bstDelete(root.Right, val, callback)
 	}
 
 	return root
@@ -304,6 +352,7 @@ func bstDelete(root *BSTNode, val int, callback func(*BSTNode) *BSTNode) (result
 
 func BSTDelete(root *BSTNode, val int) *BSTNode {
 	return bstDelete(root, val, bstNopCallback)
+	// return bstDeleteRecursively(root, val, 1, bstNopCallback)
 }
 
 ////////////////////////////////////////////////
@@ -419,4 +468,39 @@ func AvlInsert(root *BSTNode, val int) *BSTNode {
 
 func AvlDelete(root *BSTNode, val int) *BSTNode {
 	return bstDelete(root, val, AvlRebalance)
+}
+
+type twoThreeTreeNodeCarry struct {
+	isCarry bool
+	val     int
+}
+
+func (this *twoThreeTreeNodeCarry) isCarrySet() bool {
+	return this != nil && this.isCarry
+}
+
+func (this *twoThreeTreeNodeCarry) getCarry() int {
+	return this.val
+}
+
+type TwoThreeTreeNode struct {
+	Min        int
+	minCounter int
+	Max        int
+	maxCounter int
+	Left       *TwoThreeTreeNode
+	Middle     *TwoThreeTreeNode
+	Right      *TwoThreeTreeNode
+	carry      *twoThreeTreeNodeCarry // 进位，用于插入时子节点向上propagate元素时使用
+}
+
+func TwoThreeTreeInsert(root *TwoThreeTreeNode, val int) *TwoThreeTreeNode {
+	if root == nil {
+		return &TwoThreeTreeNode{
+			Min:        val,
+			minCounter: 1,
+		}
+	}
+
+	return nil
 }
