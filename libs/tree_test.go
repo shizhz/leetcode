@@ -148,7 +148,7 @@ func TestBST(t *testing.T) {
 	root = BSTInsert(root, 7)
 
 	fmt.Println(root)
-	fmt.Printf("Height: %d\n", BSTHeight(root))
+	fmt.Printf("Height: %d\n", root.height())
 	fmt.Println("Test BST Deletion")
 	root = BSTDelete(root, 2)
 	fmt.Println(root)
@@ -165,3 +165,42 @@ func TestBST(t *testing.T) {
 	root = BSTDelete(root, 2)
 	fmt.Println(root)
 }
+
+func testAvlInsertByOrder(root *BSTNode, verbose bool, vals ...int) *BSTNode {
+	if verbose {
+		fmt.Println("==============================")
+	}
+	for _, val := range vals {
+		root = AvlInsert(root, val)
+		if verbose {
+			fmt.Printf("Inserted %d: %s\n", val, root.String())
+		}
+	}
+
+	return root
+}
+
+func testAvlDeleteByOrder(root *BSTNode, verbose bool, vals ...int) *BSTNode {
+	if verbose {
+		fmt.Println("==============================")
+	}
+	for _, val := range vals {
+		root = AvlDelete(root, val)
+		if verbose {
+			fmt.Printf("Deleted %d: %s\n", val, root.String())
+		}
+	}
+
+	return root
+}
+
+func TestAvlTree(t *testing.T) {
+	testAvlInsertByOrder(nil, true, 1, -2, 2, 7, 9, 10)
+	testAvlInsertByOrder(nil, true, 1, 2, 3, 4, 5, 6)
+	testAvlInsertByOrder(nil, true, 1, 10, 8, 7, 5, 6)
+	root := testAvlInsertByOrder(nil, true, 1, -10, 10, -15, -5, -3)
+
+	fmt.Println("Test AVLDelete....")
+
+	testAvlDeleteByOrder(root, true, -15, -10)
+}	

@@ -223,7 +223,7 @@ func (this *BSTNode) String() string {
 	return bstTreeToString(this)
 }
 
-func BSTInsert(root *BSTNode, val int) *BSTNode {
+func bstInsert(root *BSTNode, val int, callback func(*BSTNode) *BSTNode) (result *BSTNode) {
 	if root == nil {
 		return &BSTNode{
 			counter: 1,
@@ -231,20 +231,36 @@ func BSTInsert(root *BSTNode, val int) *BSTNode {
 		}
 	}
 
+	defer func() {
+		result = callback(result)
+	}()
+
 	if root.Val == val {
 		root.counter++
 	} else if root.Val > val {
-		root.Left = BSTInsert(root.Left, val)
+		root.Left = bstInsert(root.Left, val, callback)
 	} else {
-		root.Right = BSTInsert(root.Right, val)
+		root.Right = bstInsert(root.Right, val, callback)
 	}
 	return root
 }
 
-func BSTDelete(root *BSTNode, val int) *BSTNode {
+var bstNopCallback func(*BSTNode) *BSTNode = func(node *BSTNode) *BSTNode {
+	return node
+}
+
+func BSTInsert(root *BSTNode, val int) *BSTNode {
+	return bstInsert(root, val, bstNopCallback)
+}
+
+func bstDelete(root *BSTNode, val int, callback func(*BSTNode) *BSTNode) (result *BSTNode) {
 	if root == nil {
 		return nil
 	}
+
+	defer func() {
+		result = callback(result)
+	}()
 
 	if root.Val == val {
 		root.counter--
@@ -286,6 +302,10 @@ func BSTDelete(root *BSTNode, val int) *BSTNode {
 	return root
 }
 
+func BSTDelete(root *BSTNode, val int) *BSTNode {
+	return bstDelete(root, val, bstNopCallback)
+}
+
 ////////////////////////////////////////////////
 //     y                               x	   //
 //    / \     Right Rotation          /  \	   //
@@ -306,7 +326,7 @@ func LeftRotation(root *BSTNode) *BSTNode {
 	return right
 }
 
-func RightRatation(root *BSTNode) *BSTNode {
+func RightRotation(root *BSTNode) *BSTNode {
 	if root == nil || root.Left == nil {
 		return root
 	}
@@ -319,17 +339,84 @@ func RightRatation(root *BSTNode) *BSTNode {
 	return left
 }
 
-func BSTHeight(root *BSTNode) int {
-	if root == nil {
+func max(i1, i2 int) int {
+	if i1 > i2 {
+		return i1
+	}
+
+	return i2
+}
+
+func min(i1, i2 int) int {
+	if i1 < i2 {
+		return i1
+	}
+
+	return i2
+}
+
+func abs(i1, i2 int) int {
+	var result int = i1 - i2
+
+	if result >= 0 {
+		return result
+	} else {
+		return -result
+	}
+}
+
+func (this *BSTNode) height() int {
+	if this == nil {
 		return -1
 	}
 
-	leftHeight := BSTHeight(root.Left)
-	rightHeight := BSTHeight(root.Right)
+	return 1 + max(this.Left.height(), this.Right.height())
+}
 
-	if leftHeight > rightHeight {
-		return 1 + leftHeight
+func AvlRebalance(root *BSTNode) *BSTNode {
+	leftHeight := root.Left.height()
+	rightHeight := root.Right.height()
+
+	if abs(leftHeight, rightHeight) <= 1 {
+		return root
 	}
 
-	return 1 + rightHeight
+	z := root
+	zyLeft, yxLeft := true, true // Default left-left case
+	var y *BSTNode
+
+	if leftHeight < rightHeight {
+		y = z.Right
+		zyLeft = false
+	} else {
+		y = z.Left
+	}
+
+	if y.Left.height() < y.Right.height() {
+		yxLeft = false
+	}
+
+	if zyLeft && yxLeft { // Left-Left case - right rotation
+		return RightRotation(z)
+	}
+
+	if !zyLeft && !yxLeft { // Right-Right case - left rotation
+		return LeftRotation(root)
+	}
+
+	if zyLeft && !yxLeft { // Left-Right case - left rotation and then right rotation
+		z.Left = LeftRotation(y)
+		return RightRotation(z)
+	}
+
+	z.Right = RightRotation(y) // Right-Left case - right rotation and then left rotation
+	return LeftRotation(z)
+}
+
+func AvlInsert(root *BSTNode, val int) *BSTNode {
+	return bstInsert(root, val, AvlRebalance)
+}
+
+func AvlDelete(root *BSTNode, val int) *BSTNode {
+	return bstDelete(root, val, AvlRebalance)
 }
